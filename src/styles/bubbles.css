@@ -1,0 +1,149 @@
+/* ===== Canvas ===== */
+.canvas {
+    position: relative;
+    min-height: calc(100vh - 140px);
+    background: radial-gradient(1200px 500px at top center,
+            #0f172a,
+            #020617);
+    overflow: hidden;
+}
+
+/* Dim background when a bubble is open */
+.canvas.dim .bubble {
+    opacity: 0.25;
+    filter: blur(0.5px);
+}
+
+/* ===== Grid Layout ===== */
+.bubble-grid {
+  width: 100%;
+  max-width: 1200px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 28px;
+
+  padding: 60px 40px;
+  justify-items: center;
+}
+
+/* ===== Bubble ===== */
+.bubble {
+    width: clamp(72px, 8vw, 110px);
+    height: clamp(72px, 8vw, 110px);
+    border-radius: 50%;
+    background: linear-gradient(145deg,
+            #38bdf8,
+            #2563eb);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px;
+    font-size: clamp(11px, 1vw, 14px);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    box-shadow:
+        0 10px 30px rgba(37, 99, 235, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    transition: all 0.3s ease;
+}
+.bubble:hover {
+  transform: translateY(-6px) scale(1.08);
+  box-shadow:
+    0 20px 40px rgba(56, 189, 248, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.bubble.open {
+  transform: scale(1.15);
+  box-shadow:
+    0 0 0 4px rgba(56, 189, 248, 0.6),
+    0 30px 80px rgba(0, 0, 0, 0.6);
+}
+/* ===== Overlay ===== */
+.bubble-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.75);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.bubble-content {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  width: min(900px, 92vw);
+  max-height: 85vh;
+  padding: 32px 36px;
+  border-radius: 20px;
+  overflow-y: auto;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+  animation: scaleIn 0.25s ease-out;
+}
+/* Overlay title */
+.bubble-content h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+/* HTML content styling */
+.html-content p {
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.html-content code {
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.html-content pre {
+    background: #0b1020;
+    color: #e5e7eb;
+    padding: 14px;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+/* ===== Animation ===== */
+@keyframes popIn {
+    from {
+        transform: scale(0.92);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 600px) {
+    .bubble-grid {
+        gap: 14px;
+        padding: 20px;
+    }
+
+    .bubble-content {
+        padding: 20px;
+    }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
