@@ -10,7 +10,10 @@ export default function App() {
     <>
       <header className="app-header">
         <div className="header-left">
-          <span className="app-title">Tanvi Tech.</span>
+          <h1 className="app-title">
+            Tanvi<span className="app-title-accent">Tech</span>
+          </h1>
+
         </div>
 
         <nav className="header-actions">

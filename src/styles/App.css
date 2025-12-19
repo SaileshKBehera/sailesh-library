@@ -1,12 +1,14 @@
 * {
   box-sizing: border-box;
 }
-
 body {
   margin: 0;
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(120deg, #a0a0a0, #fcc4c4);
-  color: #0f172a;
+
+  /* ✅ FINAL THEME */
+  background: linear-gradient(120deg, #21e1c1, #5a6dfc);
+
+  color: #ffffff;
 }
 
 #root {
@@ -85,12 +87,19 @@ body {
   display: flex;
   flex-direction: column;
 }
-
 .app-title {
-  margin: 0;
   font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.3px;
+  letter-spacing: 0.5px;
+  color: #000000;
+ 
+  margin: 0;
+}
+
+/* Accent part */
+.app-title-accent {
+  margin-left: 2px;
+ color: white;
 }
 
 .app-subtitle {
