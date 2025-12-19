@@ -1,0 +1,26 @@
+.subject-filter {
+  display: flex;
+  gap: 12px;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: #0f2f44;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.pill:hover {
+  opacity: 1;
+}
+
+.pill.active {
+  background: #102b40;
+  outline: 2px solid #21e1c1;
+}

@@ -11,14 +11,15 @@ export default function CreateTopic() {
   });
 
   const [session, setSession] = useState(null);
+  const [subjects, setSubjects] = useState([]);
+  const [loadingSubjects, setLoadingSubjects] = useState(true);
 
+  /* ---------------- AUTH ---------------- */
   useEffect(() => {
-    // Get existing session
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
     });
 
-    // Listen for auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
@@ -30,13 +31,44 @@ export default function CreateTopic() {
     };
   }, []);
 
+  /* ---------------- FETCH SUBJECTS ---------------- */
+  useEffect(() => {
+    async function fetchSubjects() {
+      const { data, error } = await supabase
+        .from("subjects")
+        .select("name")
+        .order("name");
+
+      if (error) {
+        console.error("Error fetching subjects", error);
+      } else {
+        setSubjects(data);
+      }
+
+      setLoadingSubjects(false);
+    }
+
+    fetchSubjects();
+  }, []);
+
+  /* ---------------- SAVE ---------------- */
   async function save() {
     if (!session) {
       alert("Please login with GitHub to add a topic");
       return;
     }
 
-    const { error } = await supabase.from("topics").insert([form]);
+    if (!form.subject) {
+      alert("Please select a subject");
+      return;
+    }
+
+    const { error } = await supabase.from("topics").insert([
+      {
+        ...form,
+        created_by: session.user.id // optional but recommended
+      }
+    ]);
 
     if (error) {
       alert("You are not authorized to add topics");
@@ -45,6 +77,7 @@ export default function CreateTopic() {
     }
 
     alert("Saved");
+
     setForm({
       subject: "",
       topic_key: "",
@@ -53,7 +86,7 @@ export default function CreateTopic() {
     });
   }
 
-  // If not logged in → show login
+  /* ---------------- LOGIN UI ---------------- */
   if (!session) {
     return (
       <div className="form">
@@ -69,16 +102,27 @@ export default function CreateTopic() {
     );
   }
 
-  // Logged in → show form
+  /* ---------------- FORM ---------------- */
   return (
     <div className="form">
-      <input
-        placeholder="Subject"
+      {/* SUBJECT DROPDOWN */}
+      <select
         value={form.subject}
         onChange={e =>
           setForm({ ...form, subject: e.target.value })
         }
-      />
+        disabled={loadingSubjects}
+      >
+        <option value="">
+          {loadingSubjects ? "Loading subjects..." : "Select Subject"}
+        </option>
+
+        {subjects.map(s => (
+          <option key={s.name} value={s.name}>
+            {s.name}
+          </option>
+        ))}
+      </select>
 
       <input
         placeholder="Topic Key"

@@ -2,9 +2,6 @@
 .canvas {
     position: relative;
     min-height: calc(100vh - 140px);
-    background: radial-gradient(1200px 500px at top center,
-            #0f172a,
-            #020617);
     overflow: hidden;
 }
 
@@ -32,10 +29,8 @@
     width: clamp(72px, 8vw, 110px);
     height: clamp(72px, 8vw, 110px);
     border-radius: 50%;
-    background: linear-gradient(145deg,
-            #38bdf8,
-            #2563eb);
-    color: white;
+    
+    color: rgb(0, 0, 0);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,10 +40,15 @@
     font-weight: 600;
     letter-spacing: 0.2px;
     cursor: pointer;
-    box-shadow:
-        0 10px 30px rgba(37, 99, 235, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    
     transition: all 0.3s ease;
+
+    
+  border-radius: 50%;
+  background-color: #ffffff; /* teal like the image */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .bubble:hover {
   transform: translateY(-6px) scale(1.08);
