@@ -32,10 +32,7 @@
     
      color: #0f172a;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 12px;
+       padding: 12px;
     font-size: clamp(11px, 1vw, 14px);
     font-weight: 600;
     letter-spacing: 0.2px;
@@ -85,6 +82,7 @@
   overflow-y: auto;
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
   animation: scaleIn 0.25s ease-out;
+    text-align: left;
 }
 /* Overlay title */
 .bubble-content h2 {

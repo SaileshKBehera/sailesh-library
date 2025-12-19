@@ -9,7 +9,7 @@ export default function CreateTopic() {
     title: "",
     content: ""
   });
-
+  
   const [session, setSession] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [loadingSubjects, setLoadingSubjects] = useState(true);
@@ -53,7 +53,7 @@ export default function CreateTopic() {
 
   /* ---------------- SAVE ---------------- */
   async function save() {
-    if (!session) {
+     if (!session) {
       alert("Please login with GitHub to add a topic");
       return;
     }

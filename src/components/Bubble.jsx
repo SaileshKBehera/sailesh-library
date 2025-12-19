@@ -14,7 +14,7 @@ export default function Bubble({ topic, active, setActive }) {
             {isOpen && (
                 <div
                     className="content"
-                    dangerouslySetInnerHTML={{ __html: topic.content }}
+                    dangerouslySetInnerHTML={{ __html: topic.content.replace(/\n/g, "<br />") }}
                 />
             )}
         </div>

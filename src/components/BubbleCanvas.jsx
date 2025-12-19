@@ -45,7 +45,7 @@ export default function BubbleCanvas({ topics, activeSubjects }) {
             <div
               className="html-content"
               dangerouslySetInnerHTML={{
-                __html: activeTopic.content
+                __html: activeTopic.content.replace(/\n/g, "<br />")
               }}
             />
           </div>
