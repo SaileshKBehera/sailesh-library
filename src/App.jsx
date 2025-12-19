@@ -2,6 +2,7 @@ import { useState } from "react";
 import CreateTopic from "./pages/CreateTopic";
 import KnowledgeCanvas from "./pages/KnowledgeCanvas";
 import "./styles/header.css";
+import AdminPanel from "./pages/AdminPanel";
 
 export default function App() {
   const [mode, setMode] = useState("view");
@@ -30,10 +31,18 @@ export default function App() {
           >
             Add Topic
           </span>
+           <span
+            className={`nav-link ${mode === "admin" ? "active" : ""}`}
+            onClick={() => setMode("admin")}
+          >
+            Admin
+          </span>
         </nav>
       </header>
 
-      {mode === "view" ? <KnowledgeCanvas /> : <CreateTopic />}
+      {mode === "view" && <KnowledgeCanvas />}
+      {mode === "create" && <CreateTopic />}
+      {mode === "admin" && <AdminPanel />}
     </>
   );
 }
