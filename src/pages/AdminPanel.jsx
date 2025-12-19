@@ -4,11 +4,20 @@ import "../styles/form.css";
 
 export default function AdminPanel() {
   const [session, setSession] = useState(null);
+
   const [subjects, setSubjects] = useState([]);
   const [topics, setTopics] = useState([]);
+
   const [newSubject, setNewSubject] = useState("");
 
-  /* -------- Auth -------- */
+  const [editingTopic, setEditingTopic] = useState(null);
+  const [editForm, setEditForm] = useState({
+    subject: "",
+    title: "",
+    content: ""
+  });
+
+  /* ---------------- AUTH ---------------- */
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
@@ -21,15 +30,24 @@ export default function AdminPanel() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  /* -------- Data -------- */
+  /* ---------------- LOAD DATA ---------------- */
   useEffect(() => {
     if (!session) return;
 
-    supabase.from("subjects").select("*").then(({ data }) => setSubjects(data || []));
-    supabase.from("topics").select("*").then(({ data }) => setTopics(data || []));
+    supabase
+      .from("subjects")
+      .select("*")
+      .order("name")
+      .then(({ data }) => setSubjects(data || []));
+
+    supabase
+      .from("topics")
+      .select("*")
+      .order("title")
+      .then(({ data }) => setTopics(data || []));
   }, [session]);
 
-  /* -------- Actions -------- */
+  /* ---------------- SUBJECT ---------------- */
   async function addSubject() {
     if (!newSubject.trim()) return;
 
@@ -37,10 +55,45 @@ export default function AdminPanel() {
       .from("subjects")
       .insert([{ name: newSubject.trim() }]);
 
-    if (!error) {
-      setSubjects(prev => [...prev, { name: newSubject }]);
-      setNewSubject("");
+    if (error) {
+      alert("Failed to add subject");
+      console.error(error);
+      return;
     }
+
+    setSubjects(prev => [...prev, { name: newSubject.trim() }]);
+    setNewSubject("");
+  }
+
+  /* ---------------- TOPIC ACTIONS ---------------- */
+  function startEdit(topic) {
+    setEditingTopic(topic.id);
+    setEditForm({
+      subject: topic.subject,
+      title: topic.title,
+      content: topic.content
+    });
+  }
+
+  async function saveEdit() {
+    const { error } = await supabase
+      .from("topics")
+      .update(editForm)
+      .eq("id", editingTopic);
+
+    if (error) {
+      alert("Update failed");
+      console.error(error);
+      return;
+    }
+
+    setTopics(prev =>
+      prev.map(t =>
+        t.id === editingTopic ? { ...t, ...editForm } : t
+      )
+    );
+
+    setEditingTopic(null);
   }
 
   async function deleteTopic(id) {
@@ -51,12 +104,16 @@ export default function AdminPanel() {
       .delete()
       .eq("id", id);
 
-    if (!error) {
-      setTopics(prev => prev.filter(t => t.id !== id));
+    if (error) {
+      alert("Delete failed");
+      console.error(error);
+      return;
     }
+
+    setTopics(prev => prev.filter(t => t.id !== id));
   }
 
-  /* -------- Guard -------- */
+  /* ---------------- GUARD ---------------- */
   if (!session) {
     return (
       <div className="form">
@@ -72,11 +129,13 @@ export default function AdminPanel() {
     );
   }
 
-  /* -------- UI -------- */
+  /* ---------------- UI ---------------- */
   return (
     <div className="form">
-      <h3>Add Subject</h3>
+      <h2>Admin Panel</h2>
 
+      {/* ADD SUBJECT */}
+      <h3>Add Subject</h3>
       <input
         placeholder="New subject"
         value={newSubject}
@@ -86,17 +145,64 @@ export default function AdminPanel() {
 
       <hr />
 
-      <h3>Delete Topics</h3>
+      {/* MANAGE TOPICS */}
+      <h3>Manage Topics</h3>
 
       {topics.map(t => (
-        <div key={t.id} style={{ marginBottom: 8 }}>
-          {t.title}
-          <button
-            style={{ marginLeft: 12 }}
-            onClick={() => deleteTopic(t.id)}
-          >
-            Delete
-          </button>
+        <div key={t.id} style={{ marginBottom: 20 }}>
+          {editingTopic === t.id ? (
+            <>
+              <select
+                value={editForm.subject}
+                onChange={e =>
+                  setEditForm({ ...editForm, subject: e.target.value })
+                }
+              >
+                {subjects.map(s => (
+                  <option key={s.name} value={s.name}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                value={editForm.title}
+                onChange={e =>
+                  setEditForm({ ...editForm, title: e.target.value })
+                }
+                placeholder="Title"
+              />
+
+              <textarea
+                value={editForm.content}
+                onChange={e =>
+                  setEditForm({ ...editForm, content: e.target.value })
+                }
+                placeholder="Content"
+              />
+
+              <button onClick={saveEdit}>Save</button>
+              <button onClick={() => setEditingTopic(null)}>
+                Cancel
+              </button>
+            </>
+          ) : (
+            <>
+              <strong>{t.title}</strong>
+              <button
+                style={{ marginLeft: 12 }}
+                onClick={() => startEdit(t)}
+              >
+                Edit
+              </button>
+              <button
+                style={{ marginLeft: 8 }}
+                onClick={() => deleteTopic(t.id)}
+              >
+                Delete
+              </button>
+            </>
+          )}
         </div>
       ))}
     </div>
